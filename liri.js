@@ -10,12 +10,15 @@
  //
  // Modified:
  //   2323 Saturday, 22 Nisan 5779 (27 April 2019) [EDT] {18013}
+ //   0623 Sunday, 23 Nisan 5779 (28 April 2019) [EDT] {18014}
  //////////////////////////////////////////////////////////////////////////////
 
  // GLOBAL VARIABLES
 
 const DoFile = 'random.txt'              // Default do file
 const LogFile = 'log.txt'
+const DefaultSong = 'The Sign'           // Default song for `spotify-this-song'
+const DefaultMovie = 'Mr. Nobody'        // Default movie for `movie-this'
 
  // Imports
 var fs = require('fs')                   // Core _fs_ Node.js module
@@ -39,14 +42,14 @@ var index = 0                           // Ind. of next Liri command to execute
  // getCommand(input):  Return the first command in _commands_ whose initial
  //   characters match those of _input_; otherwise return ''
 function getCommand(input) {
+  if (input.length === 0) return ''
   for (let i = 0; i !== Commands.length; ++i)
     if (Commands[i].length >= input.length &&
       input === Commands[i].substring(0, input.length)) return Commands[i]
   return ''}
 
  // parseCommand(command):  Parse a Liri command, returning a command object of
- //   the form:  { cmd:  liri-command,
- //                arg:  argument, with spaces replaced by +}
+ //   the form:  {cmd: liri-command, arg: argument}
 function parseCommand(command) {
   command = command.trim()
  // Get cmd
@@ -87,19 +90,18 @@ function getCommandList() {
     displayUsage()
     return}
   if (command.cmd === 'do-what-it-says') getCommandListFromFile(command.arg)
-    else if (command.arg.length === 0)
-      if (command.cmd ==='spotify-this-song') {
-        command.arg = 'The Sign'
+    else if (command.arg.length !== 0) {
+      commandList.push(command)
+      executeCommandList()}
+      else if (command.cmd === 'spotify-this-song') {
+        command.arg = DefaultSong
         commandList.push(command)
         executeCommandList()}
         else if (command.cmd === 'movie-this') {
-          command.arg = 'Mr. Nobody'
+          command.arg = DefaultMovie
           commandList.push(command)
           executeCommandList()}
           else displayUsage()
-      else {
-        commandList.push(command)
-        executeCommandList()}
   return}
 
  // getCommandListFromFile(filename):  Get list of Liri commands from filename
@@ -114,8 +116,15 @@ function getCommandListFromFile(filename) {
     dataArray = data.split('\n')
     for (let cmd of dataArray) {
       var command = parseCommand(cmd)
-      if (command.cmd.length !== 0 && command.cmd !== 'do-what-it-says' &&
-        command.arg.length !== 0) commandList.push(command)}
+      if (command.cmd.length !== 0 && command.cmd !== 'do-what-it-says')
+        if (command.arg.length !== 0) commandList.push(command)
+          else if (command.cmd === 'spotify-this-song') {
+            command.arg = DefaultSong
+            commandList.push(command)}
+            else if (command.cmd === 'movie-this') {
+              command.arg = DefaultMovie
+              commandList.push(command)}
+      } // for
     if (commandList.length >= 1) executeCommandList()
     return}) // function(error, data)
   return}
