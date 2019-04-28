@@ -1,0 +1,10 @@
+spotify-this-song,"I Want it That Way"
+spotify-this, 'Born This Way'
+spotify
+concert-this "Grateful Dead"
+concert Troye Sivan
+movie-this 'Call Me by Your Name'
+movie Shelter
+m
+
+gobbledygook
