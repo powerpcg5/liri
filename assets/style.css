@@ -1,0 +1,119 @@
+ /****************************************************************************
+  * liri/assets/style.css
+  * CSS stylesheet for Liri home page
+  *
+  * 2358 Saturday, 22 Nisan 5779 (27 April 2019) [EDT] {18013}
+  *
+  * University of Richmond Coding Boot Camp run by Trilogy Education Services
+  * Austin Kim
+  *
+  * Modified:
+  *   0355 Sunday, 23 Nisan 5779 (28 April 2019) [EDT] {18014}
+  ****************************************************************************/
+
+ /* Body */
+body {
+  background-color: #fff7e9;
+  background-image: url('background.jpeg');
+  background-position: top;
+  background-repeat: repeat-y;
+/* Sticky footer */
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column}
+
+ /* Nav element */
+.nav-wrapper {
+  left: 5%;
+  width: 90%}
+
+ /* Main */
+main {
+  margin-top: 10px;
+ /* Sticky footer */
+  flex: 1 0 auto}
+
+ /* Container */
+.container {
+  width: 80%}
+
+ /* Rows */
+div.row {
+  margin-bottom: 8px}
+
+ /* Block elements */
+
+h5 {
+  position: relative;
+  left: -5%;
+  text-decoration: underline}
+
+ul {
+  position: relative;
+  left: 10%}
+
+ul li {
+  text-indent: -5%;
+  font-size: 112.5%}
+
+ol {
+  list-style-position: outside;
+  position: relative;
+  left: 2.5%}
+
+ol li {
+  text-indent: -5%;
+  padding-left: 6%;
+  font-size: 112.5%}
+
+p.flow-text {
+  font-size: 125%}
+
+pre {
+  position: relative;
+  left: -10%;
+  font-size: 112.5%;
+  color: green}
+
+ /* Inter-element spacing */
+
+pre + p {
+  margin-top: -3%}
+
+p + p {
+  margin-top: -1%}
+
+ /* Inline elements */
+
+code {
+  font-size: 100%;
+  color: green}
+
+p code {
+  font-size: 93.75%}
+
+ /* Simulated terminal output */
+
+p + div.term {
+  margin-top: -1ex}
+
+div.term {
+  background-color: rgba(0, 0, 0, 0.625)}
+
+div.term pre {
+  position: relative;
+  left: 0.5rem;
+  color: #00ff00;
+  font-size: 93.75%}
+
+ /* Footer */
+
+footer.page-footer {
+  padding-top: 0px}
+
+footer .container {
+  width: 90%}
+
+.css-logo {
+  position: relative;
+  bottom: 7px}

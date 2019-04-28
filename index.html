@@ -1,0 +1,899 @@
+<!--************************************************************************
+    * liri/index.html
+    * Node.js command-line utility for querying Bands in Town, Spotify, and
+    *   OMDB APIs
+    *
+    * 2356 Saturday, 22 Nisan 5779 (27 April 2019) [EDT] {18013}
+    *
+    * University of Richmond Coding Boot Camp run by Trilogy Education Services
+    * Austin Kim
+    *
+    * Modified:
+    *   0356 Sunday, 23 Nisan 5779 (28 April 2019) [EDT] {18014}
+    ************************************************************************-->
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport'
+      content='width=device-width, initial-scale=1, shrink-to-fit=no'/>
+    <!--Materialize CSS-->
+    <link rel='stylesheet'
+      href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'
+      integrity='sha384-5KZdSYqynSzIjQGS2M1O3HW6HVDBjfNx0v5Y2eQuE3vvQ9NTiiPK9/GWc0yYCrgw'
+      crossorigin='anonymous'/>
+    <!--CSS stylesheet-->
+    <link rel='stylesheet' type='text/css' href='assets/style.css'/>
+    <title>Liri Home Page</title>
+    <!--IMPORT SCRIPTS-->
+    <!--Materialize-->
+    <script defer
+      src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js'
+      integrity='sha384-ZOED+d9HxogEQwD+jFvux96iGQR9TxfJO+mPF2ZS0TuKH6eWrmvPsDpO6I0OWdiX'
+      crossorigin='anonymous'></script>
+  </head>
+  <body>
+    <!--Header-->
+    <header>
+      <!--Materialize navigation bar-->
+      <nav>
+        <div class='nav-wrapper'>
+          <a href='https://powerpcg5.github.io/liri/'
+            class='brand-logo left'>Liri</a>
+          <ul id='nav-mobile' class='right'>
+            <li>
+              <a class='waves-effect waves-light btn'
+                href='https://github.com/powerpcg5/liri/'>Go to repository</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <!--Main-->
+    <main>
+      <!--Main container-->
+      <div class='container'>
+        <div class='row center-align'>
+          <h4>Liri &ndash; A Node.js command-line utility for querying Bands in
+            Town, Spotify, and OMDB APIs</h4>
+        </div>
+        <div class='row'>
+          <h5>Synopsis</h5>
+        </div>
+        <div class='row'>
+          <pre>
+            node liri concert-this &lt;artist or band name&gt;
+            node liri spotify-this-song &lt;song name&gt;
+            node liri movie-this &lt;movie name&gt;
+            node liri do-what-it-says &lt;command file&gt;
+          </pre>
+          <p class='flow-text'>Commands may be abbreviated.&nbsp; The following
+            commands are supported:</p>
+          <ul>
+            <li><code>concert-this</code>:&nbsp; Query the <a href=
+              'https://manager.bandsintown.com/support/bandsintown-api/'>Bands
+              in Town API</a> for an artist&rsquo;s or band&rsquo;s upcoming
+              concerts, including information on concert dates, venues, and
+              venue locations;</li>
+            <li><code>spotify-this-song</code>:&nbsp; Query the <a href=
+              'https://developer.spotify.com/documentation/web-api/'>Spotify
+              API</a> for a song&rsquo;s artist(s), album, and preview URL on
+              Spotify;</li>
+            <li><code>movie-this</code>:&nbsp; Query the <a href=
+              'https://www.omdbapi.com/'>OMDb API</a> for a movie&rsquo;s year
+              of release, <a href='https://www.imdb.com/'>IMDb</a> rating, <a
+              href='https://www.rottentomatoes.com/'>Rotten Tomatoes</a>
+              rating, country of origin, language(s), plot, and actor(s);</li>
+            <li><code>do-what-it-says</code>:&nbsp; Run an external file
+              (<code>random.txt</code> by default) containing any of the above
+              commands.</li>
+          </ul>
+        </div>
+        <div class='row'>
+          <h5>Installation</h5>
+        </div>
+        <div class='row'>
+          <p class='flow-text'>To install and set up Liri:</p>
+          <ol>
+            <li>In a Terminal (or equivalent) window, clone the Liri GitHub
+              repository with:<br
+              /><code>git clone
+              https://github.com/powerpcg5/liri.git</code></li>
+            <li><code>cd liri</code>;</li>
+            <li><code>vi .env</code>, and append the following lines to the
+              file:<br
+              /><code># Spotify API keys</code><br
+              /><code>SPOTIFY_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code><br
+              /><code>SPOTIFY_SECRET=yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</code><br
+              />(Replace <code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code> and
+              <code>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</code> with your Spotify
+              client ID and secret, respectively, which you can obtain from
+              <a href='https://developer.spotify.com/dashboard/'>here</a>);</li>
+            <li><code>npm init -y</code><br
+              />(This is actually optional, as <code>package.json</code> is
+              included); and finally,</li>
+            <li><code>npm i</code></li>
+          </ol>
+        <div class='row'>
+          <h5>Examples</h5>
+        </div>
+        <div class='row'>
+          <p class='flow-text'>Get command usage:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri
+Usage: node liri concert-this &lt;artist or band name&gt;
+       node liri spotify-this-song &lt;song name&gt;
+       node liri movie-this &lt;movie name&gt;
+       node liri do-what-it-says &lt;command file&gt;
+</pre>
+          </div>
+          <p class='flow-text'>Using <code>concert-this</code>:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri concert-this Troye Sivan
+--------Query:  concert-this ‘Troye Sivan’--------------------------------------
+1.  Date:  5/1/2019
+        Venue:  Mall of Asia 
+        Location:  Manila, Philippines
+2.  Date:  5/3/2019
+        Venue:  Star Theatre
+        Location:  Singapore, Singapore
+3.  Date:  5/6/2019
+        Venue:  Asia World Expo Hall, Hall 10
+        Location:  Chek Lap Kok, Hong Kong
+4.  Date:  5/8/2019
+        Venue:  exhibition hall
+        Location:  Khet Phaya Thai, Thailand
+5.  Date:  6/1/2019
+        Venue:  Sluzewiec Racetrack
+        Location:  Warszawa, Poland
+6.  Date:  7/7/2019
+        Venue:  Ruissalon telakka
+        Location:  Turku, Finland
+7.  Date:  7/9/2019
+        Venue:  Groos
+        Location:  Grimstad, Norway
+</pre>
+          </div>
+          <p class='flow-text'>Commands can be abbreviated:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri c Andrew Bird
+--------Query:  concert-this ‘Andrew Bird’--------------------------------------
+[No match]
+</pre>
+          </div>
+          <p class='flow-text'>Using <code>spotify-this-song</code>:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri spotify-this-song Bone Machine
+--------Query:  spotify-this ‘Bone Machine’-------------------------------------
+1.  “Bone Machine”
+        Artist:  Pixies
+        Album:  _Surfer Rosa (Remastered)_
+        Preview URL:  https://p.scdn.co/mp3-preview/b939a33a12f3b7e36e1098dd9cce6fda8c497230?cid=b175555b7f504313a0f30d24d0898b37
+2.  “Goin' Out West”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+3.  “Giant (with Rag'n'Bone Man) - Purple Disco Machine Remix”
+        Artist:  Calvin Harris, Rag'n'Bone Man, Purple Disco Machine
+        Album:  _Giant (with Rag'n'Bone Man) [Remixes]_
+        Preview URL:  https://p.scdn.co/mp3-preview/3018bcfe24d4afdef524ef91b4088d0b3bba1a9a?cid=b175555b7f504313a0f30d24d0898b37
+4.  “I Don't Wanna Grow Up”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+5.  “Jesus Gonna Be Here”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+6.  “The Earth Died Screaming”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+7.  “A Little Rain”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+8.  “Dirt In The Ground”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+9.  “Bone Machine”
+        Artist:  Pixies
+        Album:  _Wave Of Mutilation: Best Of Pixies_
+        Preview URL:  https://p.scdn.co/mp3-preview/17f17def08304c24f730eda6295d7a3dddfffcdc?cid=b175555b7f504313a0f30d24d0898b37
+10. “Who Are You This Time”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+11. “Murder In The Red Barn”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+12. “Bone Machine”
+        Artist:  Pixies
+        Album:  _Death To The Pixies_
+        Preview URL:  https://p.scdn.co/mp3-preview/b9f95eb45bc4c838969798831a74aa2e7c326ef0?cid=b175555b7f504313a0f30d24d0898b37
+13. “Black Wings”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+14. “Such A Scream”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+15. “That Feel”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+16. “All Stripped Down”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+17. “In The Colosseum”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+18. “Sloppy Remix”
+        Artist:  Krayzie Bone, Machine Gun Kelly & Ray Jr.
+        Album:  _Cleveland Is the City, Ohio Is the State_
+        Preview URL:  https://p.scdn.co/mp3-preview/7146de9723c608bd90923eb943dca7240124665d?cid=b175555b7f504313a0f30d24d0898b37
+19. “The Ocean”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+20. “Whistle Down The Wind”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+</pre>
+          </div>
+          <p class='flow-text'>Again, commands can be abbreviated:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri s The W.A.N.D.
+--------Query:  spotify-this ‘The W.A.N.D.’-------------------------------------
+1.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _At War With The Mystics_
+        Preview URL:  https://p.scdn.co/mp3-preview/658aff790caef3ed33b85333d41ccef93cea65a4?cid=b175555b7f504313a0f30d24d0898b37
+2.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _At War With The Mystics_
+        Preview URL:  https://p.scdn.co/mp3-preview/658aff790caef3ed33b85333d41ccef93cea65a4?cid=b175555b7f504313a0f30d24d0898b37
+3.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/99073b9806fb0097230091fb4237560336ee265b?cid=b175555b7f504313a0f30d24d0898b37
+4.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _Greatest Hits, Vol. 1_
+        Preview URL:  https://p.scdn.co/mp3-preview/f62585790a1ef349b1cdc457316f83b9a6b07c95?cid=b175555b7f504313a0f30d24d0898b37
+5.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _Greatest Hits, Vol. 1 (Deluxe Edition)_
+        Preview URL:  https://p.scdn.co/mp3-preview/f62585790a1ef349b1cdc457316f83b9a6b07c95?cid=b175555b7f504313a0f30d24d0898b37
+6.  “The W.A.N.D.”
+        Artist:  Rockabye Baby!
+        Album:  _Lullaby Renditions of the Flaming Lips_
+        Preview URL:  https://p.scdn.co/mp3-preview/aca5ec2775ef576688b9865ff666b01e20536a59?cid=b175555b7f504313a0f30d24d0898b37
+7.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _Mystics Explained_
+        Preview URL:  https://p.scdn.co/mp3-preview/55e60c8b994313a0076cc926923838694437acdc?cid=b175555b7f504313a0f30d24d0898b37
+8.  “The W.A.N.D. Explained”
+        Artist:  The Flaming Lips
+        Album:  _Mystics Explained_
+        Preview URL:  https://p.scdn.co/mp3-preview/0964751df590a438306e8532872348373d3923ae?cid=b175555b7f504313a0f30d24d0898b37
+9.  “The Yeah Yeah Yeah Song - In Anatropous Reflex”
+        Artist:  The Flaming Lips
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/caaa02caffba22297bbb988f4a6a565325b4cf1d?cid=b175555b7f504313a0f30d24d0898b37
+10. “You Got To Hold On - Non-Album Track”
+        Artist:  The Flaming Lips
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/b04c62c376aba16f7497a7b4bc56a2ca0979c1d2?cid=b175555b7f504313a0f30d24d0898b37
+11. “The W.A.N.D. SUPERNATURALISTIC - Goldfrapp Remix”
+        Artist:  The Flaming Lips, Goldfrapp
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/572ac4f90d39e42413de73590e7312523e5d6c34?cid=b175555b7f504313a0f30d24d0898b37
+12. “The W.A.N.D.”
+        Artist:  Midnite String Quartet
+        Album:  _MSQ Performs The Flaming Lips_
+        Preview URL:  https://p.scdn.co/mp3-preview/d5590121b3c6431fe8b2a26c7e2d7938acd97d03?cid=b175555b7f504313a0f30d24d0898b37
+13. “W.A.N.D.”
+        Artist:  Hit Co. Masters
+        Album:  _Complete Rock Collection of the 2000's, Vol. 8_
+        Preview URL:  https://p.scdn.co/mp3-preview/3f3150cd4279275e7f5a599ca554f40e6f5e40a3?cid=b175555b7f504313a0f30d24d0898b37
+14. “The W.A.N.D.”
+        Artist:  The Hit Crew
+        Album:  _Rock of the 00's, Vol. 23_
+        Preview URL:  https://p.scdn.co/mp3-preview/956fb31c4688aa623fd5e19dd8e56f37b37c0164?cid=b175555b7f504313a0f30d24d0898b37
+15. “The W.A.N.D. - Instrumental”
+        Artist:  The Hit Crew
+        Album:  _Drew's Famous Instrumental Modern Rock Collection (Vol. 44)_
+        Preview URL:  null
+</pre>
+          </div>
+          <p class='flow-text'>Using <code>movie-this</code>:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri movie-this Call Me by Your Name
+--------Query:  movie-this ‘Call Me by Your Name’-------------------------------
+Title:  _Call Me by Your Name_
+Year:  2017
+IMDB rating:  7.9
+Rotten Tomatoes rating:  95%
+Country:  Italy, France, Brazil, USA
+Language(s):  English, Italian, French, German, Hebrew
+Plot:  In 1980s Italy, a romance blossoms between a seventeen year-old student and the older man hired as his father's research assistant.
+Actors:  Armie Hammer, Timothée Chalamet, Michael Stuhlbarg, Amira Casar
+</pre>
+          </div>
+          <p class='flow-text'>And abbreviating commands again:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ node liri m Shelter
+--------Query:  movie-this ‘Shelter’--------------------------------------------
+Title:  _Shelter_
+Year:  2007
+IMDB rating:  7.8
+Rotten Tomatoes rating:  58%
+Country:  USA
+Language(s):  English
+Plot:  When his college dreams are sidelined by family obligations, a young man finds comfort in surfing with his best friend's brother.
+Actors:  Trevor Wright, Brad Rowe, Tina Holmes, Jackson Wurth
+</pre>
+          </div>
+          <p class='flow-text'>All this time Liri has been logging queries and
+            results in <code>log.txt</code>:</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ cat log.txt
+--------Query:  concert-this ‘Troye Sivan’--------------------------------------
+1.  Date:  5/1/2019
+        Venue:  Mall of Asia 
+        Location:  Manila, Philippines
+2.  Date:  5/3/2019
+        Venue:  Star Theatre
+        Location:  Singapore, Singapore
+3.  Date:  5/6/2019
+        Venue:  Asia World Expo Hall, Hall 10
+        Location:  Chek Lap Kok, Hong Kong
+4.  Date:  5/8/2019
+        Venue:  exhibition hall
+        Location:  Khet Phaya Thai, Thailand
+5.  Date:  6/1/2019
+        Venue:  Sluzewiec Racetrack
+        Location:  Warszawa, Poland
+6.  Date:  7/7/2019
+        Venue:  Ruissalon telakka
+        Location:  Turku, Finland
+7.  Date:  7/9/2019
+        Venue:  Groos
+        Location:  Grimstad, Norway
+--------Query:  concert-this ‘Andrew Bird’--------------------------------------
+[No match]
+--------Query:  spotify-this ‘Bone Machine’-------------------------------------
+1.  “Bone Machine”
+        Artist:  Pixies
+        Album:  _Surfer Rosa (Remastered)_
+        Preview URL:  https://p.scdn.co/mp3-preview/b939a33a12f3b7e36e1098dd9cce6fda8c497230?cid=b175555b7f504313a0f30d24d0898b37
+2.  “Goin' Out West”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+3.  “Giant (with Rag'n'Bone Man) - Purple Disco Machine Remix”
+        Artist:  Calvin Harris, Rag'n'Bone Man, Purple Disco Machine
+        Album:  _Giant (with Rag'n'Bone Man) [Remixes]_
+        Preview URL:  https://p.scdn.co/mp3-preview/3018bcfe24d4afdef524ef91b4088d0b3bba1a9a?cid=b175555b7f504313a0f30d24d0898b37
+4.  “I Don't Wanna Grow Up”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+5.  “Jesus Gonna Be Here”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+6.  “The Earth Died Screaming”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+7.  “A Little Rain”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+8.  “Dirt In The Ground”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+9.  “Bone Machine”
+        Artist:  Pixies
+        Album:  _Wave Of Mutilation: Best Of Pixies_
+        Preview URL:  https://p.scdn.co/mp3-preview/17f17def08304c24f730eda6295d7a3dddfffcdc?cid=b175555b7f504313a0f30d24d0898b37
+10. “Who Are You This Time”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+11. “Murder In The Red Barn”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+12. “Bone Machine”
+        Artist:  Pixies
+        Album:  _Death To The Pixies_
+        Preview URL:  https://p.scdn.co/mp3-preview/b9f95eb45bc4c838969798831a74aa2e7c326ef0?cid=b175555b7f504313a0f30d24d0898b37
+13. “Black Wings”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+14. “Such A Scream”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+15. “That Feel”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+16. “All Stripped Down”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+17. “In The Colosseum”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+18. “Sloppy Remix”
+        Artist:  Krayzie Bone, Machine Gun Kelly & Ray Jr.
+        Album:  _Cleveland Is the City, Ohio Is the State_
+        Preview URL:  https://p.scdn.co/mp3-preview/7146de9723c608bd90923eb943dca7240124665d?cid=b175555b7f504313a0f30d24d0898b37
+19. “The Ocean”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+20. “Whistle Down The Wind”
+        Artist:  Tom Waits
+        Album:  _Bone Machine_
+        Preview URL:  null
+--------Query:  spotify-this ‘The W.A.N.D.’-------------------------------------
+1.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _At War With The Mystics_
+        Preview URL:  https://p.scdn.co/mp3-preview/658aff790caef3ed33b85333d41ccef93cea65a4?cid=b175555b7f504313a0f30d24d0898b37
+2.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _At War With The Mystics_
+        Preview URL:  https://p.scdn.co/mp3-preview/658aff790caef3ed33b85333d41ccef93cea65a4?cid=b175555b7f504313a0f30d24d0898b37
+3.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/99073b9806fb0097230091fb4237560336ee265b?cid=b175555b7f504313a0f30d24d0898b37
+4.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _Greatest Hits, Vol. 1_
+        Preview URL:  https://p.scdn.co/mp3-preview/f62585790a1ef349b1cdc457316f83b9a6b07c95?cid=b175555b7f504313a0f30d24d0898b37
+5.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _Greatest Hits, Vol. 1 (Deluxe Edition)_
+        Preview URL:  https://p.scdn.co/mp3-preview/f62585790a1ef349b1cdc457316f83b9a6b07c95?cid=b175555b7f504313a0f30d24d0898b37
+6.  “The W.A.N.D.”
+        Artist:  Rockabye Baby!
+        Album:  _Lullaby Renditions of the Flaming Lips_
+        Preview URL:  https://p.scdn.co/mp3-preview/aca5ec2775ef576688b9865ff666b01e20536a59?cid=b175555b7f504313a0f30d24d0898b37
+7.  “The W.A.N.D.”
+        Artist:  The Flaming Lips
+        Album:  _Mystics Explained_
+        Preview URL:  https://p.scdn.co/mp3-preview/55e60c8b994313a0076cc926923838694437acdc?cid=b175555b7f504313a0f30d24d0898b37
+8.  “The W.A.N.D. Explained”
+        Artist:  The Flaming Lips
+        Album:  _Mystics Explained_
+        Preview URL:  https://p.scdn.co/mp3-preview/0964751df590a438306e8532872348373d3923ae?cid=b175555b7f504313a0f30d24d0898b37
+9.  “The Yeah Yeah Yeah Song - In Anatropous Reflex”
+        Artist:  The Flaming Lips
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/caaa02caffba22297bbb988f4a6a565325b4cf1d?cid=b175555b7f504313a0f30d24d0898b37
+10. “You Got To Hold On - Non-Album Track”
+        Artist:  The Flaming Lips
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/b04c62c376aba16f7497a7b4bc56a2ca0979c1d2?cid=b175555b7f504313a0f30d24d0898b37
+11. “The W.A.N.D. SUPERNATURALISTIC - Goldfrapp Remix”
+        Artist:  The Flaming Lips, Goldfrapp
+        Album:  _The W.A.N.D. (U.S. DMD Maxi)_
+        Preview URL:  https://p.scdn.co/mp3-preview/572ac4f90d39e42413de73590e7312523e5d6c34?cid=b175555b7f504313a0f30d24d0898b37
+12. “The W.A.N.D.”
+        Artist:  Midnite String Quartet
+        Album:  _MSQ Performs The Flaming Lips_
+        Preview URL:  https://p.scdn.co/mp3-preview/d5590121b3c6431fe8b2a26c7e2d7938acd97d03?cid=b175555b7f504313a0f30d24d0898b37
+13. “W.A.N.D.”
+        Artist:  Hit Co. Masters
+        Album:  _Complete Rock Collection of the 2000's, Vol. 8_
+        Preview URL:  https://p.scdn.co/mp3-preview/3f3150cd4279275e7f5a599ca554f40e6f5e40a3?cid=b175555b7f504313a0f30d24d0898b37
+14. “The W.A.N.D.”
+        Artist:  The Hit Crew
+        Album:  _Rock of the 00's, Vol. 23_
+        Preview URL:  https://p.scdn.co/mp3-preview/956fb31c4688aa623fd5e19dd8e56f37b37c0164?cid=b175555b7f504313a0f30d24d0898b37
+15. “The W.A.N.D. - Instrumental”
+        Artist:  The Hit Crew
+        Album:  _Drew's Famous Instrumental Modern Rock Collection (Vol. 44)_
+        Preview URL:  null
+--------Query:  movie-this ‘Call Me by Your Name’-------------------------------
+Title:  _Call Me by Your Name_
+Year:  2017
+IMDB rating:  7.9
+Rotten Tomatoes rating:  95%
+Country:  Italy, France, Brazil, USA
+Language(s):  English, Italian, French, German, Hebrew
+Plot:  In 1980s Italy, a romance blossoms between a seventeen year-old student and the older man hired as his father's research assistant.
+Actors:  Armie Hammer, Timothée Chalamet, Michael Stuhlbarg, Amira Casar
+--------Query:  movie-this ‘Shelter’--------------------------------------------
+Title:  _Shelter_
+Year:  2007
+IMDB rating:  7.8
+Rotten Tomatoes rating:  58%
+Country:  USA
+Language(s):  English
+Plot:  When his college dreams are sidelined by family obligations, a young man finds comfort in surfing with his best friend's brother.
+Actors:  Trevor Wright, Brad Rowe, Tina Holmes, Jackson Wurth
+</pre>
+          </div>
+          <p class='flow-text'>Using the command <code>do-what-it-says</code>,
+            Liri can execute commands like the above from a text file (by
+            default <code>random.txt</code>):</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ cat random.txt
+spotify-this-song,"I Want it That Way"
+ak@mac:~/Desktop/liri$ node liri do-what-it-says
+--------Query:  spotify-this ‘I Want it That Way’-------------------------------
+1.  “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _The Hits--Chapter One_
+        Preview URL:  https://p.scdn.co/mp3-preview/e72a05dc3f69c891e3390c3ceaa77fad02f6b5f6?cid=b175555b7f504313a0f30d24d0898b37
+2.  “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _Millennium_
+        Preview URL:  https://p.scdn.co/mp3-preview/b8c2410a5acb68b462be6ac85f1312430e2b149c?cid=b175555b7f504313a0f30d24d0898b37
+3.  “I Want It That Way”
+        Artist:  Anthem Lights
+        Album:  _Covers Part IV_
+        Preview URL:  https://p.scdn.co/mp3-preview/4a163fbfa2dbbe4433f277e0e7395dca656364f5?cid=b175555b7f504313a0f30d24d0898b37
+4.  “I Want It That Way”
+        Artist:  Jess and Gabriel
+        Album:  _Under the Covers, Vol. 3_
+        Preview URL:  https://p.scdn.co/mp3-preview/cc50bfee8d34ec92fda4109243c7ef0e6856f185?cid=b175555b7f504313a0f30d24d0898b37
+5.  “I Want It That Way”
+        Artist:  Mick Jensen
+        Album:  _I Want It That Way_
+        Preview URL:  https://p.scdn.co/mp3-preview/f8181f66713983fab073e133e23c741acbe00d75?cid=b175555b7f504313a0f30d24d0898b37
+6.  “I Want It That Way”
+        Artist:  Tyler and Mark
+        Album:  _Beautiful Dreams_
+        Preview URL:  https://p.scdn.co/mp3-preview/99c791194bbd4e5f315ca8964babf0b69bc520b3?cid=b175555b7f504313a0f30d24d0898b37
+7.  “Ebay (Parody of "I Want It That Way" by the Backstreet Boys)”
+        Artist:  "Weird Al" Yankovic
+        Album:  _Poodle Hat_
+        Preview URL:  https://p.scdn.co/mp3-preview/e217ea111ab84a777f204252fce4b18d5de3ae80?cid=b175555b7f504313a0f30d24d0898b37
+8.  “I Want It That Way”
+        Artist:  Dynamite Boy
+        Album:  _Punk Goes Pop_
+        Preview URL:  null
+9.  “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _90 Sweet 90s Hits!_
+        Preview URL:  https://p.scdn.co/mp3-preview/2f96341eb8415a3efb27375db1c4d59928408c2f?cid=b175555b7f504313a0f30d24d0898b37
+10. “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _NKOTBSB_
+        Preview URL:  https://p.scdn.co/mp3-preview/adf2485de3f3f375593b5307a792e8d8e6f19794?cid=b175555b7f504313a0f30d24d0898b37
+11. “I Want It That Way”
+        Artist:  Steel Panther
+        Album:  _I Want It That Way_
+        Preview URL:  null
+12. “Bye Bye Bye / I Want It That Way (Glee Cast Version)”
+        Artist:  Glee Cast
+        Album:  _Bye Bye Bye / I Want It That Way (Glee Cast Version)_
+        Preview URL:  https://p.scdn.co/mp3-preview/3aa63b5c98b98ae333e567813e5c720abb2914f0?cid=b175555b7f504313a0f30d24d0898b37
+13. “I Want It That Way”
+        Artist:  Boyce Avenue
+        Album:  _Cover Sessions, Vol. 2_
+        Preview URL:  https://p.scdn.co/mp3-preview/764f1dcb8c9a9cec099cc361cb388f931bf023d3?cid=b175555b7f504313a0f30d24d0898b37
+14. “I Want It That Way”
+        Artist:  Manuel Costa
+        Album:  _I Want It That Way_
+        Preview URL:  https://p.scdn.co/mp3-preview/cdde86f49ca4ef217ac08bbbb0c6295c16f015b0?cid=b175555b7f504313a0f30d24d0898b37
+15. “I Want It That Way”
+        Artist:  Scary Pockets, Casey Abrams
+        Album:  _Nu Funk_
+        Preview URL:  https://p.scdn.co/mp3-preview/33685e005149d5e7d0199a764163ff77f7762e29?cid=b175555b7f504313a0f30d24d0898b37
+16. “I Want It That Way”
+        Artist:  Scott Bradlee's Postmodern Jukebox, Shoshana Bean
+        Album:  _Selfies on Kodachrome_
+        Preview URL:  https://p.scdn.co/mp3-preview/53296f4b689baaa0be6d94e8720c044e98d4b3e3?cid=b175555b7f504313a0f30d24d0898b37
+17. “I Want It That Way”
+        Artist:  Yshop
+        Album:  _I Want It That Way_
+        Preview URL:  https://p.scdn.co/mp3-preview/8d1287b933d37b96943a5041ebcd46c328c9a0ce?cid=b175555b7f504313a0f30d24d0898b37
+18. “I Want It That Way”
+        Artist:  Kidz Bop Kids
+        Album:  _Kidz Bop_
+        Preview URL:  null
+19. “Ebay (Parody of "I Want It That Way" by the Backstreet Boys)”
+        Artist:  "Weird Al" Yankovic
+        Album:  _The Essential "Weird Al" Yankovic_
+        Preview URL:  https://p.scdn.co/mp3-preview/5632d8e302d70afaa8f79c962aa4b2032a45b3ef?cid=b175555b7f504313a0f30d24d0898b37
+20. “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _NOW That's What I Call 90s Pop_
+        Preview URL:  https://p.scdn.co/mp3-preview/c9302062adf4f59e60335f30c7ca46b487a267fb?cid=b175555b7f504313a0f30d24d0898b37
+</pre>
+          </div>
+          <p class='flow-text'>An optional argument to
+            <code>do-what-it-says</code> allows you to specify the do file to
+            execute (any invalid commands in the do file are ignored):</p>
+          <div class='term'>
+<pre>
+ak@mac:~/Desktop/liri$ cat do.txt
+spotify-this-song,"I Want it That Way"
+spotify-this, 'Born This Way'
+spotify
+concert-this "Grateful Dead"
+concert Troye Sivan
+movie-this 'Call Me by Your Name'
+movie Shelter
+m
+
+gobbledygook
+ak@mac:~/Desktop/liri$ node liri d do.txt
+--------Query:  spotify-this ‘I Want it That Way’-------------------------------
+1.  “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _The Hits--Chapter One_
+        Preview URL:  https://p.scdn.co/mp3-preview/e72a05dc3f69c891e3390c3ceaa77fad02f6b5f6?cid=b175555b7f504313a0f30d24d0898b37
+2.  “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _Millennium_
+        Preview URL:  https://p.scdn.co/mp3-preview/b8c2410a5acb68b462be6ac85f1312430e2b149c?cid=b175555b7f504313a0f30d24d0898b37
+3.  “I Want It That Way”
+        Artist:  Anthem Lights
+        Album:  _Covers Part IV_
+        Preview URL:  https://p.scdn.co/mp3-preview/4a163fbfa2dbbe4433f277e0e7395dca656364f5?cid=b175555b7f504313a0f30d24d0898b37
+4.  “I Want It That Way”
+        Artist:  Jess and Gabriel
+        Album:  _Under the Covers, Vol. 3_
+        Preview URL:  https://p.scdn.co/mp3-preview/cc50bfee8d34ec92fda4109243c7ef0e6856f185?cid=b175555b7f504313a0f30d24d0898b37
+5.  “I Want It That Way”
+        Artist:  Mick Jensen
+        Album:  _I Want It That Way_
+        Preview URL:  https://p.scdn.co/mp3-preview/f8181f66713983fab073e133e23c741acbe00d75?cid=b175555b7f504313a0f30d24d0898b37
+6.  “I Want It That Way”
+        Artist:  Tyler and Mark
+        Album:  _Beautiful Dreams_
+        Preview URL:  https://p.scdn.co/mp3-preview/99c791194bbd4e5f315ca8964babf0b69bc520b3?cid=b175555b7f504313a0f30d24d0898b37
+7.  “Ebay (Parody of "I Want It That Way" by the Backstreet Boys)”
+        Artist:  "Weird Al" Yankovic
+        Album:  _Poodle Hat_
+        Preview URL:  https://p.scdn.co/mp3-preview/e217ea111ab84a777f204252fce4b18d5de3ae80?cid=b175555b7f504313a0f30d24d0898b37
+8.  “I Want It That Way”
+        Artist:  Dynamite Boy
+        Album:  _Punk Goes Pop_
+        Preview URL:  null
+9.  “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _90 Sweet 90s Hits!_
+        Preview URL:  https://p.scdn.co/mp3-preview/2f96341eb8415a3efb27375db1c4d59928408c2f?cid=b175555b7f504313a0f30d24d0898b37
+10. “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _NKOTBSB_
+        Preview URL:  https://p.scdn.co/mp3-preview/adf2485de3f3f375593b5307a792e8d8e6f19794?cid=b175555b7f504313a0f30d24d0898b37
+11. “I Want It That Way”
+        Artist:  Steel Panther
+        Album:  _I Want It That Way_
+        Preview URL:  null
+12. “Bye Bye Bye / I Want It That Way (Glee Cast Version)”
+        Artist:  Glee Cast
+        Album:  _Bye Bye Bye / I Want It That Way (Glee Cast Version)_
+        Preview URL:  https://p.scdn.co/mp3-preview/3aa63b5c98b98ae333e567813e5c720abb2914f0?cid=b175555b7f504313a0f30d24d0898b37
+13. “I Want It That Way”
+        Artist:  Boyce Avenue
+        Album:  _Cover Sessions, Vol. 2_
+        Preview URL:  https://p.scdn.co/mp3-preview/764f1dcb8c9a9cec099cc361cb388f931bf023d3?cid=b175555b7f504313a0f30d24d0898b37
+14. “I Want It That Way”
+        Artist:  Manuel Costa
+        Album:  _I Want It That Way_
+        Preview URL:  https://p.scdn.co/mp3-preview/cdde86f49ca4ef217ac08bbbb0c6295c16f015b0?cid=b175555b7f504313a0f30d24d0898b37
+15. “I Want It That Way”
+        Artist:  Scary Pockets, Casey Abrams
+        Album:  _Nu Funk_
+        Preview URL:  https://p.scdn.co/mp3-preview/33685e005149d5e7d0199a764163ff77f7762e29?cid=b175555b7f504313a0f30d24d0898b37
+16. “I Want It That Way”
+        Artist:  Scott Bradlee's Postmodern Jukebox, Shoshana Bean
+        Album:  _Selfies on Kodachrome_
+        Preview URL:  https://p.scdn.co/mp3-preview/53296f4b689baaa0be6d94e8720c044e98d4b3e3?cid=b175555b7f504313a0f30d24d0898b37
+17. “I Want It That Way”
+        Artist:  Yshop
+        Album:  _I Want It That Way_
+        Preview URL:  https://p.scdn.co/mp3-preview/8d1287b933d37b96943a5041ebcd46c328c9a0ce?cid=b175555b7f504313a0f30d24d0898b37
+18. “I Want It That Way”
+        Artist:  Kidz Bop Kids
+        Album:  _Kidz Bop_
+        Preview URL:  null
+19. “Ebay (Parody of "I Want It That Way" by the Backstreet Boys)”
+        Artist:  "Weird Al" Yankovic
+        Album:  _The Essential "Weird Al" Yankovic_
+        Preview URL:  https://p.scdn.co/mp3-preview/5632d8e302d70afaa8f79c962aa4b2032a45b3ef?cid=b175555b7f504313a0f30d24d0898b37
+20. “I Want It That Way”
+        Artist:  Backstreet Boys
+        Album:  _NOW That's What I Call 90s Pop_
+        Preview URL:  https://p.scdn.co/mp3-preview/c9302062adf4f59e60335f30c7ca46b487a267fb?cid=b175555b7f504313a0f30d24d0898b37
+--------Query:  spotify-this ‘Born This Way’------------------------------------
+1.  “Always Remember Us This Way”
+        Artist:  Lady Gaga
+        Album:  _A Star Is Born Soundtrack (Without Dialogue)_
+        Preview URL:  null
+2.  “Always Remember Us This Way”
+        Artist:  Lady Gaga
+        Album:  _A Star Is Born Soundtrack_
+        Preview URL:  null
+3.  “Born This Way”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+4.  “You And I”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+5.  “The Edge Of Glory”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+6.  “Always Remember Us This Way”
+        Artist:  Lady Gaga
+        Album:  _A Star Is Born Soundtrack_
+        Preview URL:  null
+7.  “Judas”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+8.  “Born This Way”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+9.  “Marry The Night”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+10. “The Edge Of Glory”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+11. “You And I”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+12. “Born This Way”
+        Artist:  Thousand Foot Krutch
+        Album:  _OXYGEN:INHALE_
+        Preview URL:  https://p.scdn.co/mp3-preview/aeb32998872250d82c0d701fd19717311e04e114?cid=b175555b7f504313a0f30d24d0898b37
+13. “Judas”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+14. “Hair”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+15. “Marry The Night”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+16. “Bloody Mary”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+17. “Scheiße”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+18. “Americano”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+19. “ScheiBe”
+        Artist:  Lady Gaga
+        Album:  _Born This Way (Special Edition)_
+        Preview URL:  null
+20. “Americano”
+        Artist:  Lady Gaga
+        Album:  _Born This Way_
+        Preview URL:  null
+--------Query:  concert-this ‘Grateful Dead’------------------------------------
+[No match]
+--------Query:  concert-this ‘Troye Sivan’--------------------------------------
+1.  Date:  5/1/2019
+        Venue:  Mall of Asia 
+        Location:  Manila, Philippines
+2.  Date:  5/3/2019
+        Venue:  Star Theatre
+        Location:  Singapore, Singapore
+3.  Date:  5/6/2019
+        Venue:  Asia World Expo Hall, Hall 10
+        Location:  Chek Lap Kok, Hong Kong
+4.  Date:  5/8/2019
+        Venue:  exhibition hall
+        Location:  Khet Phaya Thai, Thailand
+5.  Date:  6/1/2019
+        Venue:  Sluzewiec Racetrack
+        Location:  Warszawa, Poland
+6.  Date:  7/7/2019
+        Venue:  Ruissalon telakka
+        Location:  Turku, Finland
+7.  Date:  7/9/2019
+        Venue:  Groos
+        Location:  Grimstad, Norway
+--------Query:  movie-this ‘Call Me by Your Name’-------------------------------
+Title:  _Call Me by Your Name_
+Year:  2017
+IMDB rating:  7.9
+Rotten Tomatoes rating:  95%
+Country:  Italy, France, Brazil, USA
+Language(s):  English, Italian, French, German, Hebrew
+Plot:  In 1980s Italy, a romance blossoms between a seventeen year-old student and the older man hired as his father's research assistant.
+Actors:  Armie Hammer, Timothée Chalamet, Michael Stuhlbarg, Amira Casar
+--------Query:  movie-this ‘Shelter’--------------------------------------------
+Title:  _Shelter_
+Year:  2007
+IMDB rating:  7.8
+Rotten Tomatoes rating:  58%
+Country:  USA
+Language(s):  English
+Plot:  When his college dreams are sidelined by family obligations, a young man finds comfort in surfing with his best friend's brother.
+Actors:  Trevor Wright, Brad Rowe, Tina Holmes, Jackson Wurth
+</pre>
+          </div>
+          <p class='flow-text'>(Output from executing do files is also logged
+            into <code>log.txt</code> as well, just like the output of commands
+            executed from the command line.)</p>
+        </div>
+        <div class='row'>
+          <h5>Notes</h5>
+        </div>
+        <div class='row'>
+          <p class='flow-text'><cite>Liri</cite> stands for &lsquo;Language
+            Interpretation and Recognition Interface,&rsquo; a pun on Siri
+            (&lsquo;Speech Interpretation and Recognition
+            Interface&rsquo;).</p>
+        </div>
+      </div>
+    </main>
+    <!--Footer-->
+    <footer class='page-footer'>
+      <div class='container'>
+        <div class='row valign-wrapper'>
+          <div class='col s8'>
+            <p class='white-text'>Copyright &copy; 2019 Austin Kim under the
+              terms of the <a href='https://opensource.org/licenses/MIT/'>MIT
+              License</a>.<br
+              />Last modified at 0356 Sunday, 23 Nisan 5779 (28 April 2019)
+              [EDT] {18014}.<br
+              />Send errors and broken links to freennix at gmail dot com.</p>
+          </div>
+          <div class='col s4 right-align'>
+            <a href='https://validator.w3.org/check?uri=referer'><img
+              class='tooltipped' data-position='top'
+              data-tooltip='Valid HTML 5!'
+              src='https://www.w3.org/QA/Tools/I_heart_validator_lg.png'
+              alt='Valid HTML 5!'/></a>
+            <a href='https://jigsaw.w3.org/css-validator/check?uri=referer'><img
+              class='tooltipped css-logo' data-position='top'
+              data-tooltip='Valid CSS level 3!'
+              src='https://jigsaw.w3.org/css-validator/images/vcss.png'
+              alt='Valid CSS level 3!'/></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
